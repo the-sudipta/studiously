@@ -4,10 +4,14 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { MemberModule } from './member/member.module';
+import { AuthModule } from './member/auth/auth.module';
 // import { AuthModule } from './customer/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
+    MemberModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
