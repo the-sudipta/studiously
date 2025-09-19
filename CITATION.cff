@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: >-
+  If you use this project, please cite it using the metadata below.
+title: "Studiously — Member Auth & Password Reset (NestJS)"
+abstract: >-
+  Production-ready NestJS module showcasing JWT authentication (HS256), OTP-based
+  password reset, TypeORM entities with unique constraints, and secure email transport
+  via Mailtrap/Gmail (STARTTLS/implicit TLS). Includes custom AuthGuard, single-source
+  JWT configuration, and Postman-friendly endpoints.
+authors:
+  - family-names: "Das"
+    given-names: "Sudipta Kumar"
+    orcid: "https://orcid.org/0009-0000-7521-776"
+license: MIT
+keywords:
+  - NestJS
+  - JWT
+  - HS256
+  - OTP
+  - Password Reset
+  - TypeORM
+  - PostgreSQL
+  - Nodemailer
+  - Mailtrap
+  - Gmail
+  - Security
+  - Backend
+version: "0.1.0"
+date-released: "2025-09-19"
+type: software
+repository-code: "https://github.com/the-sudipta/studiously"
+preferred-citation:
+  type: software
+  title: "Studiously — Member Auth & Password Reset (NestJS)"
+  authors:
+    - family-names: "Das"
+      given-names: "Sudipta Kumar"
+      orcid: "https://orcid.org/0009-0000-7521-776"
+  year: 2025
+  notes: "Please cite this software if it supported your research or product."
