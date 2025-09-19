@@ -33,7 +33,7 @@
 
 ## 🧭 Project Structure
 ```text
-src/
+studiously/
 |-- 📁 src
 |   |-- 📁 member
 |   |   |-- 📁 entities
