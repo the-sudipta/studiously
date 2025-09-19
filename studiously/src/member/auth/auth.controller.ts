@@ -16,7 +16,7 @@ import {
 import { AuthService } from './auth.service';
 // import { FileInterceptor } from "@nestjs/platform-express";
 // import { MulterError, diskStorage } from "multer";
-import * as bcrypt from 'bcrypt';
+// import * as bcrypt from 'bcrypt';
 import { AuthGuard } from './auth.guard';
 import { LoginDTO } from '../dtos/login.dto';
 import { New_PasswordDTO } from '../dtos/newPassword.dto';
@@ -103,10 +103,6 @@ export class AuthController {
     console.log('New Pass = ' + new_Password_Object_DTO.password);
 
     try {
-      new_Password_Object_DTO.password = await bcrypt.hash(
-        new_Password_Object_DTO.password,
-        12,
-      );
       const result = await this.authService.UpdatePassword(
         req,
         new_Password_Object_DTO.password,

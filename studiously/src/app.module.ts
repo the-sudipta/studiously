@@ -28,13 +28,15 @@ import { AuthModule } from './member/auth/auth.module';
       transport: {
         host: process.env.MAILER_HOST,
         port: parseInt(process.env.MAILER_PORT!, 10),
-        ignoreTLS: true,
-        secure: true,
+        requireTLS: true,
+        secure: false,
         auth: {
           user: process.env.MAILER_USER,
           pass: process.env.MAILER_PASSWORD,
         },
+        tls: { minVersion: 'TLSv1.2', servername: process.env.MAILER_HOST },
       },
+      defaults: { from: process.env.MAILER_USER },
     }),
   ],
   controllers: [AppController],

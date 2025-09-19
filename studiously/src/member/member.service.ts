@@ -75,20 +75,91 @@ export class MemberService {
     }
   }
 
-  async Update_Password(
-    req: Request,
-    password: string,
-  ): Promise<number | undefined> {
+  async Update_Password(req: Request, hashedPassword: string): Promise<number> {
     try {
       const user = await this.get_user_from_Request(req);
       console.log('Update Password header Request  user email = ' + user.email);
-      const update = await this.userRepository.update(user.id, {
-        password: password,
+      const result = await this.userRepository.update(user.id, {
+        password: hashedPassword,
       });
-      return update.affected;
+      return result.affected ?? 0;
     } catch (e) {
       throw new InternalServerErrorException(
         `Update_Password MemberService Error = ${e instanceof Error ? e.message : String(e)}`,
+        { cause: e instanceof Error ? e : undefined },
+      );
+    }
+  }
+
+  async ForgetPassword(email: string) {
+    try {
+      const user = await this.userRepository.findOneBy({ email: email });
+      if (user != null) {
+        //   Generate OTP
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const OTP = await this.Generate_OTP();
+        const user_has_pin = await this.otpRepository.findOneBy({ user: user });
+        if (user_has_pin) {
+          console.log('Okay, Already have OTP. Needs to be updated');
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          await this.otpRepository.update(user_has_pin.id, { otp: OTP });
+          const user_has_pin_updated = await this.otpRepository.findOneBy({
+            user: user,
+          });
+          console.log('Updated OTP = ' + user_has_pin_updated!.otp);
+        } else {
+          const new_otp = new OtpEntity();
+          new_otp.id = -1;
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          new_otp.otp = OTP;
+          new_otp.user = user;
+          const saved_data = await this.otpRepository.save(new_otp);
+          console.log('New OTP = ' + saved_data.otp);
+        }
+
+        //   Send the OTP through email
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const body =
+          process.env.EMAIL_BODY_P1 + OTP + process.env.EMAIL_BODY_P2;
+        await this.Send_Email(email, process.env.EMAIL_SUBJECT!, body);
+        const new_token = new LoginDTO();
+        new_token.email = email;
+        new_token.password = 'temp';
+        console.log('Email Sending Done');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return await this.create_token(new_token);
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw new InternalServerErrorException(
+        `ForgetPassword MemberService Error = ${e instanceof Error ? e.message : String(e)}`,
+        { cause: e instanceof Error ? e : undefined },
+      );
+    }
+  }
+
+  async otp_verification(req: ExpressRequest, otp: string): Promise<any> {
+    try {
+      // Get the user by the email
+      const user = await this.get_user_from_Request(req);
+      console.log('Got the user = ' + user.email);
+      //   Get the saved otp for the user
+      const saved_otp_row_for_user = await this.otpRepository.findOne({
+        where: { user: { id: user.id } },
+        order: { id: 'DESC' },
+      });
+      console.log('User provided otp = ' + otp);
+      console.log('Saved otp = ' + saved_otp_row_for_user!.otp);
+
+      if (saved_otp_row_for_user!.otp === otp) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      throw new InternalServerErrorException(
+        `otp_verification MemberService Error = ${e instanceof Error ? e.message : String(e)}`,
         { cause: e instanceof Error ? e : undefined },
       );
     }
