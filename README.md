@@ -237,7 +237,7 @@ Content-Type: application/json
 ---
 
 ## 📜 License
-MIT © Studiously Team
+[MIT](LICENSE) © Studiously Team
 
 <div align="center" style="margin-top:10px; opacity:.7;">
   Built with ❤️ using NestJS.
