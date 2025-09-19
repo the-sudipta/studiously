@@ -34,11 +34,38 @@
 ## 🧭 Project Structure
 ```text
 src/
-├─ auth/                # AuthModule (global JwtModule)
-├─ member/              # MemberModule (services, controllers)
-├─ entities/            # UserEntity, OtpEntity
-├─ common/              # guards, interceptors, mappers
-└─ main.ts
+|-- 📁 src
+|   |-- 📁 member
+|   |   |-- 📁 entities
+|   |   |-- 📁 dtos
+|   |   |-- 📁 auth
+|   |   |-- 📄 member.module.ts
+|   |   |-- 📄 member.service.ts
+|   |   |-- 📄 mapper.service.ts
+|   |   |-- 📄 member.controller.ts
+|   |-- 📁 config
+|   |   |-- 📄 roles.ts
+|   |-- 📁 admin
+|   |-- 📄 app.service.ts
+|   |-- 📄 main.ts
+|   |-- 📄 app.module.ts
+|   |-- 📄 app.controller.spec.ts
+|   |-- 📄 app.controller.ts
+|-- 📁 test
+|   |-- 📄 jest-e2e.json
+|   |-- 📄 app.e2e-spec.ts
+|-- 📁 node_modules
+|-- 📁 dist
+|-- 📄 README.md
+|-- 📄 package.json
+|-- 📄 tsconfig.json
+|-- 📄 tsconfig.build.json
+|-- 📄 package-lock.json
+|-- 📄 .gitignore
+|-- 📄 .env
+|-- 📄 .prettierrc
+|-- 📄 nest-cli.json
+|-- 📄 eslint.config.mjs
 ```
 
 ---
