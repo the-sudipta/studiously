@@ -45,27 +45,45 @@ studiously/
 |   |   |-- 📄 member.controller.ts
 |   |-- 📁 config
 |   |   |-- 📄 roles.ts
-|   |-- 📁 admin
+|   |-- 📁 collab
+|   |   |-- 📁 entities
+|   |   |-- 📁 dtos
+|   |   |-- 📄 project.service.ts
+|   |   |-- 📄 project.controller.ts
+|   |   |-- 📄 task.service.ts
+|   |   |-- 📄 task.controller.ts
+|   |   |-- 📄 collab.module.ts
+|   |   |-- 📄 collab.gateway.ts
+|   |   |-- 📄 note.service.ts
+|   |   |-- 📄 note.controller.ts
 |   |-- 📄 app.service.ts
 |   |-- 📄 main.ts
 |   |-- 📄 app.module.ts
 |   |-- 📄 app.controller.spec.ts
 |   |-- 📄 app.controller.ts
 |-- 📁 test
-|   |-- 📄 jest-e2e.json
+|   |-- 📄 jest.unit.json
+|   |-- 📄 jwt.spec.ts
+|   |-- 📄 otp.spec.ts
 |   |-- 📄 app.e2e-spec.ts
+|   |-- 📄 auth.service.mocked.spec.ts
+|   |-- 📄 jest-e2e.json
 |-- 📁 node_modules
-|-- 📁 dist
-|-- 📄 README.md
+|-- 📄 package-lock.json
+|-- 📄 nest-cli.json
+|-- 📄 eslint.config.mjs
 |-- 📄 package.json
 |-- 📄 tsconfig.json
 |-- 📄 tsconfig.build.json
-|-- 📄 package-lock.json
+|-- 📄 README.md
+|-- 📄 env.example
+|-- 📄 .prettierrc
 |-- 📄 .gitignore
 |-- 📄 .env
-|-- 📄 .prettierrc
-|-- 📄 nest-cli.json
-|-- 📄 eslint.config.mjs
+|-- 📄 docker-compose.yml
+|-- 📄 env.docker.example
+|-- 📄 dockerignore
+|-- 📄 Dockerfile
 ```
 
 ---

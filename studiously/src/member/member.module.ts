@@ -16,6 +16,6 @@ import { AuthModule } from './auth/auth.module';
   imports: [TypeOrmModule.forFeature([UserEntity, SessionEntity, OtpEntity])],
   controllers: [MemberController],
   providers: [MemberService, MapperService, TokenBlacklistService],
-  exports: [MemberService],
+  exports: [MemberService, TokenBlacklistService],
 })
 export class MemberModule {}

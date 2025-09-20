@@ -6,10 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MemberModule } from './member/member.module';
 import { AuthModule } from './member/auth/auth.module';
+import { CollabModule } from './collab/collab.module';
 // import { AuthModule } from './customer/auth/auth.module';
 
 @Module({
   imports: [
+    CollabModule,
     AuthModule,
     MemberModule,
     TypeOrmModule.forRoot({
