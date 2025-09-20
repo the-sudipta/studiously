@@ -1,0 +1,994 @@
+{
+	"info": {
+		"_postman_id": "a9d56204-ac26-4491-87db-19ddd69a6685",
+		"name": "Studiously",
+		"description": "> StartFragmentProduction-ready NestJS auth slice. Includes JWT signup/login, token validation, and a complete “forgot password” flow using email OTP. Use `.env.example` for config; all endpoints return JSON and expect Bearer tokens where noted.EndFragment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20325646"
+	},
+	"item": [
+		{
+			"name": "Member",
+			"item": [
+				{
+					"name": "Forget Password Feature",
+					"item": [
+						{
+							"name": "8. Member Forget Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"dip.kumar020@gmail.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/member/forget_password",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"forget_password"
+									]
+								},
+								"description": "### Purpose\nStart the **forgot-password** flow for a member. Creates a 6-digit OTP, saves it as the **latest** OTP for the user, and sends it via the configured SMTP (Mailtrap/Gmail).\n\n### Authorization\nJWT **Bearer**.  \n> On success this endpoint returns a **short-lived token** you must use for the next two steps.\n\n### Next steps (use the returned token)\n1. `POST /api/member/otp` — verify the OTP\n2. `POST /api/member/auth/change_password` — set a new password\n\n### Notes\n- Only the **most recent, unexpired** OTP is accepted; older codes are ignored.\n- SMTP tips: **2525/587** → `secure=false`, `requireTLS=true`; **465** → `secure=true`.\n- To avoid user enumeration you may keep responses generic (do not reveal if an email exists).\n\n### Possible errors\n- `400 Bad Request` – invalid/missing fields  \n- `404 Not Found` – user email not found (if enabled)  \n- `429 Too Many Requests` – rate limit exceeded (recommended)  \n- `500 Internal Server Error` – SMTP or server error\n"
+							},
+							"response": [
+								{
+									"name": "Member Forget Password",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"dip.kumar020@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/api/member/forget_password",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"member",
+												"forget_password"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "215"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"d7-YBG1fGe8uL9ox0bPd4dDXzJC5t8\""
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 19 Sep 2025 18:27:31 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6InRlbXAiLCJpYXQiOjE3NTgzMDY0NTEsImV4cCI6MTc1ODMwODI1MX0.rRrDb0fw5-oqAJ20KCQcmaijAgj-og8g93ytu7sU0S0\"\n}"
+								}
+							]
+						},
+						{
+							"name": "9. Member OTP Verification",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6InRlbXAiLCJpYXQiOjE3NTgzMDk4MTgsImV4cCI6MTc1ODMxMTYxOH0.cE2ZiIpfmmFXsAKuIuxM5lnVFA8T3HtquRq7o_ltyjE",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"otp\": \"157187\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/member/otp",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"otp"
+									]
+								},
+								"description": "### Purpose\nVerify the **6-digit OTP** sent to the user during the forgot-password flow. Marks the OTP as valid for this session so the user can set a new password.\n\n### Authorization\nJWT **Bearer** — use the **short-lived token** returned by `/api/member/forget_password`.\n\n### Next step (on success)\n`POST /api/member/auth/change_password` — set the new password using the **same** short-lived token.\n\n### Notes\n- Only the **latest, unexpired** OTP for the user is accepted.\n- OTPs are **single-use** by design; regenerate if expired or mismatched.\n- Consider enforcing a small rate limit to prevent brute force.\n\n### Possible errors\n- `400 Bad Request` – invalid/missing OTP\n- `401 Unauthorized` – missing/invalid short-lived token\n- `410 Gone` – OTP expired (optional semantics)\n- `429 Too Many Requests` – rate limit exceeded (recommended)\n- `500 Internal Server Error` – server/DB issue\n"
+							},
+							"response": [
+								{
+									"name": "Member OTP Verification",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6InRlbXAiLCJpYXQiOjE3NTgzMDY0NTEsImV4cCI6MTc1ODMwODI1MX0.rRrDb0fw5-oqAJ20KCQcmaijAgj-og8g93ytu7sU0S0",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"otp\": \"194640\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/api/member/otp",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"member",
+												"otp"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "56"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"38-0j7rvqavGrz9ntZEFcWAFpOGpwc\""
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 19 Sep 2025 18:46:35 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"success\": true,\n    \"message\": \"OTP verification successful\"\n}"
+								}
+							]
+						},
+						{
+							"name": "10. Member New Password",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6InRlbXAiLCJpYXQiOjE3NTgzMDk4MTgsImV4cCI6MTc1ODMxMTYxOH0.cE2ZiIpfmmFXsAKuIuxM5lnVFA8T3HtquRq7o_ltyjE",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"password\": \"0testPass@@\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/member/auth/change_password",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"auth",
+										"change_password"
+									]
+								},
+								"description": "### Purpose\nFinalize the forgot-password flow by **setting a new password** for the member after a successful OTP verification.\n\n### Authorization\nJWT **Bearer** — use the **same short-lived token** obtained from `/api/member/forget_password` (and used in `/api/member/otp`).\n\n### Notes\n- Enforce your password policy (min length, upper/lower/digit/special).\n- Consider **invalidating older sessions/tokens** after password change.\n- Return a generic success message to avoid revealing internals.\n\n### Possible errors\n- `400 Bad Request` – weak/invalid password format\n- `401 Unauthorized` – missing/invalid/expired short-lived token\n- `409 Conflict` – new password equals previous (optional rule)\n- `429 Too Many Requests` – rate limit exceeded (recommended)\n- `500 Internal Server Error` – server/DB issue\n"
+							},
+							"response": [
+								{
+									"name": "Member New Password",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6InRlbXAiLCJpYXQiOjE3NTgzMDk4MTgsImV4cCI6MTc1ODMxMTYxOH0.cE2ZiIpfmmFXsAKuIuxM5lnVFA8T3HtquRq7o_ltyjE",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"password\": \"0testPass@@\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:3000/api/member/auth/change_password",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"member",
+												"auth",
+												"change_password"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Content-Type",
+											"value": "text/html; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "4"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"4-X/5TO4MPCKAyY0ipFgr6/IraRNs\""
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 19 Sep 2025 19:26:05 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "true"
+								}
+							]
+						}
+					],
+					"description": "> Full OTP-based reset flow: request OTP → verify OTP (Bearer from step 1) → set a new password. Uses Mailtrap/Gmail SMTP; only the latest, unexpired OTP is accepted."
+				},
+				{
+					"name": "2. Member Controller Initialization",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/member/index",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"member",
+								"index"
+							]
+						},
+						"description": "### Purpose\n\nLightweight **health/ready** endpoint for the Member controller. Useful to verify the module is wired, routes are reachable, and auth middleware isn’t blocking unexpectedly.\n\n### Notes\n\n- Returns a simple string response (e.g., “Relax! Member is Alive.”).\n    \n- Good target for load balancers / uptime monitors.\n    \n- Consider adding a JSON variant later: `{ \"ok\": true, \"service\": \"member\" }`.\n    \n\n### Possible errors\n\n- `401 Unauthorized` – missing/invalid token (if left protected)\n    \n- `503 Service Unavailable` – (optional) if you add deeper checks (DB, SMTP)"
+					},
+					"response": [
+						{
+							"name": "Member Controller Initialization",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/member/index",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"index"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "23"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"17-XEMTCqkCqbQxzDOJTkmQAZMr73Q\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 17 Sep 2025 01:28:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "Relax! Member is Alive."
+						}
+					]
+				},
+				{
+					"name": "3. Member Service Initialization",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/member/getService",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"member",
+								"getService"
+							]
+						},
+						"description": "### Purpose\nService-level health probe for the **MemberService**. Confirms that the service layer is instantiated and reachable behind the controller.\n\n### Notes\n- Returns a simple success string (e.g., “CustomerService is working!”).\n- Helpful to differentiate controller wiring vs service wiring during debugging.\n- Consider returning structured JSON later for richer diagnostics.\n\n### Possible errors\n- `401 Unauthorized` – missing/invalid token (if protected)\n- `500 Internal Server Error` – service threw while handling the request\n"
+					},
+					"response": [
+						{
+							"name": "Member Service Initialization",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/member/getService",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"getService"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "27"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1b-PUdqapah7+OljEEThkyo6SGAzTo\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 17 Sep 2025 01:29:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "CustomerService is working!"
+						}
+					]
+				},
+				{
+					"name": "4. Member Auth Initialization",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/member/auth/index",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"member",
+								"auth",
+								"index"
+							]
+						},
+						"description": "### Purpose\n\nHealth/initialization check for the **Auth submodule** under Member. Confirms the auth routes and providers (guards, strategies) are loaded correctly.\n\n### Authorization\n\nJWT **Bearer** (as configured).\n\n> Can be made public if you want a simple external probe for the auth slice. \n  \n\n### Notes\n\n- Returns a static success string (e.g., “Relax! Customer Auth is working.”).\n    \n- Useful during setup to validate the auth wiring independent of business logic.\n    \n- You can extend this later to return version/build info of the auth layer.\n    \n\n### Possible errors\n\n- `401 Unauthorized` – missing/invalid token (if protected)\n    \n- `500 Internal Server Error` – module/provider initialization failure"
+					},
+					"response": [
+						{
+							"name": "Member Auth Initialization",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/member/auth/index",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"auth",
+										"index"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "32"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"20-ty36/TtBQ17mF43ej3Klbl8Juag\""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 17 Sep 2025 23:13:39 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "Relax! Customer Auth is working."
+						}
+					]
+				},
+				{
+					"name": "5. Member Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"dip.kumar020@gmail.com\",\r\n    \"password\": \"0testPass@\",\r\n    \"role\": \"member\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/member/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"member",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Member Signup",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"dip.kumar020@gmail.com\",\r\n    \"password\": \"0testPass@\",\r\n    \"role\": \"member\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/member/auth/signup",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/html; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1-2kuSN7rMzfGcB2DKt67EqDWQELA\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 18 Sep 2025 14:40:30 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "2"
+						}
+					]
+				},
+				{
+					"name": "6. Member Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"dip.kumar020@gmail.com\",\r\n    \"password\":\"0testPass@\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/member/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"member",
+								"auth",
+								"login"
+							]
+						},
+						"description": "### Purpose\n\nCreate a new **member account**. Persists the user with a hashed password and (optionally) a role.\n\n### Notes\n\n- Validate email format and enforce password policy on input.\n    \n- Passwords are **bcrypt-hashed** server-side; never store raw passwords.\n    \n- If roles are supported, default to a safe role when not provided.\n    \n- Consider sending a welcome/verification email in a later iteration.\n    \n\n### Possible errors\n\n- `400 Bad Request` – invalid/missing fields\n    \n- `409 Conflict` – email already registered\n    \n- `500 Internal Server Error` – DB/validation failure"
+					},
+					"response": [
+						{
+							"name": "Member Login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"dip.kumar020@gmail.com\",\r\n    \"password\":\"0testPass@\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/member/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "578"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"242-vhRbC6cn83/ANftWkX5pmdsO6/c\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 18 Sep 2025 16:08:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IjB0ZXN0UGFzc0AiLCJpYXQiOjE3NTgyMTE2OTEsImV4cCI6MTc1ODIxMjU5MSwiYXVkIjoic3R1ZGlvdXNseS1hcHAiLCJpc3MiOiJzdHVkaW91c2x5In0.ZcC5taRAYJVQQ98F_ZSj6zXRd1lXuKX9bkBhODbTpgIiiNB2I-5AsuZkVjHnfWfCQL9wBH0a02odwqJuUWVaxz22SIj5YrynqpTMZtuBIN0vSPhNULCZV9iD3LLZSgFeF45iXB7_b5ws5ag3vlxMGQ0pCwSTWZzd5Cp3DSjGMNn-t1YQepw57pPznvs36_rsMZhALqfqgHwzpN7KT0DNGKBZol0k7POXOFvkCCUKSTQZVVT29HIbgnMsouSXrR7P3kuK01W_dzFGI4yP86V7qLj3LfEfXWR6_l_QaWgsXXoZ3WJajg1WhfvWznbVdp5xdMVJgHCG8_ZuVZ6GW1FyWQ\"\n}"
+						}
+					]
+				},
+				{
+					"name": "7. Member JWT working or not",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IjB0ZXN0UGFzc0AiLCJpYXQiOjE3NTgyMjIyMzksImV4cCI6MTc1ODIyNDAzOX0._y8C6kfKJGp5JAC3L0Itp01Jw9erfAMGiRJEKORrcCA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/member/access_token_validation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"member",
+								"access_token_validation"
+							]
+						},
+						"description": "### Purpose\n\nAuthenticate a member with email + password and return a **JWT access token** for subsequent authorized requests.\n\n### Authorization\n\nNo token required to call this endpoint.\n\n> The response contains `access_token` (HS256) with your configured expiry. \n  \n\n### Notes\n\n- Compares password using **bcrypt**; lock out or add cooldown after repeated failures.\n    \n- Consider adding device/session metadata and refresh tokens later.\n    \n- Always return a generic error for wrong credentials to avoid account probing.\n    \n\n### Possible errors\n\n- `400 Bad Request` – malformed payload\n    \n- `401 Unauthorized` – invalid credentials\n    \n- `423 Locked` – account temporarily locked (optional)\n    \n- `500 Internal Server Error` – server/DB issue"
+					},
+					"response": [
+						{
+							"name": "Member JWT working or not",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IjB0ZXN0UGFzc0AiLCJpYXQiOjE3NTgyMjI4MzEsImV4cCI6MTc1ODIyNDYzMX0.7HQSBL-2BqJcQ2-7JAjrdwb174Mr--DWLOjF07PyMg0",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/member/access_token_validation",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"member",
+										"access_token_validation"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": null,
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "348"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"15c-g7VDWw66F5HCd1SO0phpJ2kqd/Y\""
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 18 Sep 2025 19:14:14 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Access Token Validation Complete\",\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpcC5rdW1hcjAyMEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IjB0ZXN0UGFzc0AiLCJpYXQiOjE3NTgyMjI4MzEsImV4cCI6MTc1ODIyNDYzMX0.7HQSBL-2BqJcQ2-7JAjrdwb174Mr--DWLOjF07PyMg0\",\n    \"email\": \"dip.kumar020@gmail.com\",\n    \"iat\": 1758222831,\n    \"exp\": 1758224631,\n    \"blacklisted\": false\n}"
+						}
+					]
+				}
+			],
+			"description": "> Core member/auth endpoints: signup, login, and access-token validation. Use this to create accounts, obtain JWTs, and verify tokens before calling protected routes."
+		},
+		{
+			"name": "1. Project initialization",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				},
+				"description": "### Purpose\n\nRoot **liveness** endpoint for the application. Confirms the server is running and reachable (typical NestJS “Hello World!” route).\n\n### Notes\n\n- Ideal target for uptime monitors and container health checks.\n    \n- Keep it lightweight and side-effect free.\n    \n- You may later return build/version info to aid deployments.\n    \n\n### Possible errors\n\n- `503 Service Unavailable` – if you wire deeper readiness checks and they fail"
+			},
+			"response": [
+				{
+					"name": "Project initialization",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								""
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/html; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "12"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"c-Lve95gjOVATpfV8EL5X4nxwjKHE\""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 17 Sep 2025 01:27:36 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "Hello World!"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "jwt",
+		"jwt": [
+			{
+				"key": "algorithm",
+				"value": "HS256",
+				"type": "string"
+			},
+			{
+				"key": "isSecretBase64Encoded",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "payload",
+				"value": "{}",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "headerPrefix",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "queryParamKey",
+				"value": "token",
+				"type": "string"
+			},
+			{
+				"key": "header",
+				"value": "{}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

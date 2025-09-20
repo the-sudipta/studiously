@@ -1,0 +1,41 @@
+<!doctype html><meta charset='utf-8'><title>Studiously — API Docs</title><style>
+body{margin:0;background:#0b1020;color:#e6ecff;font:15px/1.55 Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.container{max-width:1080px;margin:40px auto;padding:0 18px}
+h1{font-size:28px;margin:0 0 8px}
+h2{margin:26px 0 8px}
+.card{background:#121a30;border:1px solid #1e2a4a;border-radius:14px;padding:16px;margin:14px 0}
+.method{display:inline-block;padding:4px 10px;border-radius:8px;font-weight:800;background:#163}
+.url,pre{background:#0a0f1e;border:1px solid #1a2748;padding:12px;border-radius:8px;overflow:auto}
+.kv{display:grid;grid-template-columns:180px 1fr;gap:10px}
+.kv div{background:#0a0f1e;border:1px solid #1a2748;padding:8px;border-radius:8px}
+small.muted{color:#a6b3d1}
+</style><div class='container'><h1 align="center">Studiously — API Docs</h1><div class='card'><p class='muted small'>Generated 2025-09-19 23:30 UTC</p></div><div class='card'><div><span class='method'>POST</span> <strong>8. Member Forget Password</strong></div><div class='url'>http://localhost:3000/api/member/forget_password</div><h3>Request body</h3><pre><code>{
+    &quot;email&quot;: &quot;dip.kumar020@gmail.com&quot;
+}</code></pre><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>{
+    &quot;access_token&quot;: &quot;&lt;redacted&gt;&quot;
+}</code></pre><small class='muted'>Group: Member / Forget Password Feature</small></div><div class='card'><div><span class='method'>POST</span> <strong>9. Member OTP Verification</strong></div><div class='url'>http://localhost:3000/api/member/otp</div><h3>Headers</h3><div class='kv'><div><small class='muted'>Authorization</small></div><div><code>Bearer &amp;lt;your_jwt_here&amp;gt;</code></div></div><h3>Request body</h3><pre><code>{
+    &quot;otp&quot;: &quot;157187&quot;
+}</code></pre><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>{
+    &quot;success&quot;: true,
+    &quot;message&quot;: &quot;OTP verification successful&quot;
+}</code></pre><small class='muted'>Group: Member / Forget Password Feature</small></div><div class='card'><div><span class='method'>POST</span> <strong>10. Member New Password</strong></div><div class='url'>http://localhost:3000/api/member/auth/change_password</div><h3>Headers</h3><div class='kv'><div><small class='muted'>Authorization</small></div><div><code>Bearer &amp;lt;your_jwt_here&amp;gt;</code></div></div><h3>Request body</h3><pre><code>{
+    &quot;password&quot;: &quot;0testPass@@&quot;
+}</code></pre><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>true</code></pre><small class='muted'>Group: Member / Forget Password Feature</small></div><div class='card'><div><span class='method'>GET</span> <strong>2. Member Controller Initialization</strong></div><div class='url'>http://localhost:3000/api/member/index</div><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>Relax! Member is Alive.</code></pre><small class='muted'>Group: Member</small></div><div class='card'><div><span class='method'>GET</span> <strong>3. Member Service Initialization</strong></div><div class='url'>http://localhost:3000/api/member/getService</div><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>CustomerService is working!</code></pre><small class='muted'>Group: Member</small></div><div class='card'><div><span class='method'>GET</span> <strong>4. Member Auth Initialization</strong></div><div class='url'>http://localhost:3000/api/member/auth/index</div><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>Relax! Customer Auth is working.</code></pre><small class='muted'>Group: Member</small></div><div class='card'><div><span class='method'>POST</span> <strong>5. Member Signup</strong></div><div class='url'>http://localhost:3000/api/member/auth/signup</div><h3>Request body</h3><pre><code>{
+    &quot;email&quot;: &quot;dip.kumar020@gmail.com&quot;,
+    &quot;password&quot;: &quot;0testPass@&quot;,
+    &quot;role&quot;: &quot;member&quot;
+}
+</code></pre><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>2</code></pre><small class='muted'>Group: Member</small></div><div class='card'><div><span class='method'>POST</span> <strong>6. Member Login</strong></div><div class='url'>http://localhost:3000/api/member/auth/login</div><h3>Request body</h3><pre><code>{
+    &quot;email&quot;:&quot;dip.kumar020@gmail.com&quot;,
+    &quot;password&quot;:&quot;0testPass@&quot;
+}
+</code></pre><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>{
+    &quot;access_token&quot;: &quot;&lt;redacted&gt;&quot;
+}</code></pre><small class='muted'>Group: Member</small></div><div class='card'><div><span class='method'>GET</span> <strong>7. Member JWT working or not</strong></div><div class='url'>http://localhost:3000/api/member/access_token_validation</div><h3>Headers</h3><div class='kv'><div><small class='muted'>Authorization</small></div><div><code>Bearer &amp;lt;your_jwt_here&amp;gt;</code></div></div><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>{
+    &quot;message&quot;: &quot;Access Token Validation Complete&quot;,
+    &quot;token&quot;: &quot;&lt;redacted&gt;&quot;,
+    &quot;email&quot;: &quot;dip.kumar020@gmail.com&quot;,
+    &quot;iat&quot;: 1758222831,
+    &quot;exp&quot;: 1758224631,
+    &quot;blacklisted&quot;: false
+}</code></pre><small class='muted'>Group: Member</small></div><div class='card'><div><span class='method'>GET</span> <strong>1. Project initialization</strong></div><div class='url'>http://localhost:3000/</div><h3>Sample response <small class='muted'>HTTP 200</small></h3><pre><code>Hello World!</code></pre><small class='muted'>Group: Root</small></div></div>

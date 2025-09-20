@@ -1,0 +1,62 @@
+version: "3.9"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: studiously-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    ports:
+      - "${PORT-3000}:3000"
+    env_file:
+      - .env.docker       # create from .env.docker.example
+    environment:
+      # Fallbacks if .env.docker not provided
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgres://studiously:studiously@db:5432/studiously
+      - JWT_CUSTOM_SECRET=CHANGE_ME_BASE64_32B
+      - JWT_ACCESS_EXPIRES_IN=15m
+      - MAILER_HOST=sandbox.smtp.mailtrap.io
+      - MAILER_PORT=2525
+      - MAILER_USER=
+      - MAILER_PASSWORD=
+    # Uncomment to customize healthcheck for the API itself
+    # healthcheck:
+    #   test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+    #   interval: 30s
+    #   timeout: 5s
+    #   retries: 5
+
+  db:
+    image: postgres:15-alpine
+    container_name: studiously-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: studiously
+      POSTGRES_USER: studiously
+      POSTGRES_PASSWORD: studiously
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: studiously-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
